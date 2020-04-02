@@ -24,11 +24,13 @@ const libbzip2 = "libbz2-1.dll"
 Open all libraries
 """
 function __init__()
-    global prefix = abspath(joinpath(@__DIR__, ".."))
+    global artifact_dir = abspath(artifact"Bzip2")
 
     # Initialize PATH and LIBPATH environment variable listings
     global PATH_list, LIBPATH_list
-    global libbzip2_path = abspath(joinpath(artifact"Bzip2", libbzip2_splitpath...))
+    # We first need to add to LIBPATH_list the libraries provided by Julia
+    append!(LIBPATH_list, [Sys.BINDIR, joinpath(Sys.BINDIR, Base.LIBDIR, "julia"), joinpath(Sys.BINDIR, Base.LIBDIR)])
+    global libbzip2_path = normpath(joinpath(artifact_dir, libbzip2_splitpath...))
 
     # Manually `dlopen()` this right now so that future invocations
     # of `ccall` with its `SONAME` will find this path immediately.
